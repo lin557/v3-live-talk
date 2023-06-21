@@ -1,0 +1,11 @@
+export enum SampleRate {
+  SR8K = 8000,
+  SR11K = 11025,
+  SR12K = 12000,
+  SR16K = 16000,
+  SR22K = 22050,
+  SR24K = 24000,
+  SR32K = 32000,
+  SR44K = 44100,
+  SR48K = 48000
+}
