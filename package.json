@@ -1,6 +1,6 @@
 {
   "name": "v3-live-talk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Vue3 1078 websocket talk",
   "main": "dist/v3-live-talk.umd.js",
   "module": "dist/v3-live-talk.es.js",
@@ -27,6 +27,14 @@
       "import": "./dist/style.css",
       "require": "./dist/style.css"
     }
+  },
+  "keywords": [
+    "1078",
+    "talk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lin557/v3-live-talk"
   },
   "author": "lin557",
   "license": "MIT",

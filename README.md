@@ -102,30 +102,13 @@ const self = reactive(_data)
 
 | Property   | Description                                            | Type             | Default                     |
 | :--------- | ------------------------------------------------------ | :--------------- | :-------------------------- |
-| sampleRate | 采样率. 8000, 11025, 16000, 22050, 32000, 44100, 48000 | SampleRate(enum) | SampleRate.SR16K            |
+| sampleRate | 采样率. 8000, 11025, 16000, 22050, 32000, 44100, 48000 | number           | number            |
 | bitRate    | 采样深度. 8, 16                                        | number           | 16                          |
 | ws         | websocket地址                                          | string           | ws://localhost:9090/ws/talk |
 | imei       | 设备id                                                 | string           | 12345                       |
 | chn        | 通道号                                                 | number           | 1                           |
 | lang       | 本地化(小写). zh-cn, en, th                            | string           | en                          |
 | enabled    | 启动开关                                               | boolean          | false                       |
-
-
-
-```
-export enum SampleRate {
-  SR8K = 8000,
-  SR11K = 11025,
-  SR12K = 12000,
-  SR16K = 16000,
-  SR22K = 22050,
-  SR24K = 24000,
-  SR32K = 32000,
-  SR44K = 44100,
-  SR48K = 48000
-}
-```
-
 
 
 
