@@ -1,16 +1,16 @@
 {
   "name": "v3-live-talk",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Vue3 1078 websocket talk",
   "main": "dist/v3-live-talk.umd.js",
   "module": "dist/v3-live-talk.es.js",
   "types": "d.ts/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "dts": "vue-tsc --declaration --emitDeclarationOnly && rimraf ./src/App.vue.d.ts && rimraf ./src/main.d.ts && rimraf ./src/components/themes/*.d.ts",
+    "dts": "vue-tsc --declaration --emitDeclarationOnly && rimraf ./src/App.vue.d.ts && rimraf ./src/main.d.ts && rimraf ./src/components/i18n.d.ts && rimraf ./src/components/i18n/*.d.ts",
     "lint": "eslint src --fix --ext .ts,.tsx,.vue,.js,.jsx",
     "prettier": "prettier --write .",
-    "build": "vue-tsc && vite build",
+    "build": "vue-tsc --noEmit --skipLibCheck && vite build",
     "preview": "vite preview",
     "publish:last": "npm run build && npm publish"
   },
@@ -28,6 +28,8 @@
       "require": "./dist/style.css"
     }
   },
+  "author": "lin557",
+  "license": "MIT",
   "dependencies": {
     "recorder-core": "^1.2.23061700",
     "vue": "^3.2.47"
@@ -46,6 +48,6 @@
     "vite": "^4.3.9",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-vue-setup-extend": "^0.4.0",
-    "vue-tsc": "^1.4.2"
+    "vue-tsc": "^1.8.1"
   }
 }

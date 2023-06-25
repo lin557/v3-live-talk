@@ -15,7 +15,6 @@ import 'recorder-core/src/extensions/lib.fft'
 // 实时流播放器
 import 'recorder-core/src/extensions/buffer_stream.player'
 import i18n from './i18n'
-import { SampleRate } from '../../d.ts/index.d'
 
 Recorder.ConnectEnableWorklet = true
 
@@ -27,7 +26,7 @@ Recorder.CLog = EMP_LOG
 const MEDIA_TYPE = 'pcm'
 
 interface PropsType {
-  sampleRate?: SampleRate
+  sampleRate?: number
   bitRate?: number
   ws?: string
   imei?: string
@@ -38,7 +37,7 @@ interface PropsType {
 }
 
 const props = withDefaults(defineProps<PropsType>(), {
-  sampleRate: SampleRate.SR8K,
+  sampleRate: 16000,
   bitRate: 16,
   url: 'ws://localhost:9090/ws/talk',
   imei: '12345',
