@@ -1,11 +1,12 @@
 export default {
   init: '',
   connecting: 'connecting',
-  connected: 'waiting for talk',
+  connected: 'waiting for voice',
   disconnected: 'disconnected',
   errSocket: 'websocket error',
   noAllow: 'permission denied',
   talking: 'talking',
+  monitoring: 'monitoring',
   errCross: 'CORS error',
   errHttps: 'requires https',
   noMic: 'requires MIC',

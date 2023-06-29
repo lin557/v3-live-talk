@@ -6,6 +6,7 @@ export default {
   errSocket: 'websocket 错误',
   noAllow: '无录音权限',
   talking: '通话中',
+  monitoring: '监听中',
   errCross: '跨域错误',
   errHttps: '需要https',
   noMic: '无可用麦克风',

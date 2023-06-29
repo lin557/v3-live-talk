@@ -26,6 +26,7 @@ Recorder.CLog = EMP_LOG
 const MEDIA_TYPE = 'pcm'
 
 interface PropsType {
+  mode: boolean
   sampleRate?: number
   bitRate?: number
   ws?: string
@@ -34,9 +35,11 @@ interface PropsType {
   enabled: boolean
   lang?: string
   debug?: boolean
+  ready?: string
 }
 
 const props = withDefaults(defineProps<PropsType>(), {
+  mode: true,
   sampleRate: 16000,
   bitRate: 16,
   url: 'ws://localhost:9090/ws/talk',
@@ -44,7 +47,8 @@ const props = withDefaults(defineProps<PropsType>(), {
   chn: 1,
   enabled: false,
   lang: navigator.language.toLowerCase(),
-  debug: false
+  debug: false,
+  ready: ''
 })
 
 const emit = defineEmits<{
@@ -93,7 +97,7 @@ const runlog = computed(() => {
   let ret = ''
   switch (self.status) {
     case 0:
-      ret = locale('init')
+      ret = props.ready
       break
     case 1:
       ret = locale('connecting')
@@ -111,7 +115,7 @@ const runlog = computed(() => {
       ret = locale('noAllow')
       break
     case 6:
-      ret = locale('talking')
+      ret = props.mode ? locale('monitoring') : locale('talking')
       break
     case 7:
       ret = locale('errCross')
@@ -186,8 +190,10 @@ const createRecord = () => {
       bufferSampleRate: number
     ) => {
       // 输入音频数据，更新显示波形
-      drawWave(buffers[buffers.length - 1], powerLevel, bufferSampleRate)
-      // // 实时数据处理，清理内存
+      if (!props.mode) {
+        drawWave(buffers[buffers.length - 1], powerLevel, bufferSampleRate)
+      }
+      // 实时数据处理，清理内存
       realTimeOnProcess(buffers, powerLevel, bufferDuration, bufferSampleRate)
     }
   })
@@ -235,14 +241,14 @@ const createPlayer = (playSampleRate: number) => {
 }
 
 const wsUrl = () => {
-  let url = props.ws || 'ws://localhost/ws/talk'
+  let url = props.ws || 'ws://localhost/ws'
   const sTmp = url.slice(url.length - 1, url.length)
   if (sTmp === '/') {
     url = url.substring(0, url.length - 1)
   }
   return (
     url +
-    '/' +
+    (props.mode ? '/monitor/' : '/talk/') +
     props.imei +
     '?codec=pcm&sample_rate=' +
     props.sampleRate +
@@ -325,6 +331,9 @@ const playBuffer = (arrayBuffer: ArrayBuffer, sampleRate: number) => {
     createPlayer(sampleRate)
   }
   if (gPlayer) {
+    if (props.mode) {
+      drawWave(new Int16Array(arrayBuffer), 1, props.sampleRate)
+    }
     gPlayer.input(arrayBuffer)
   }
 }
@@ -504,6 +513,15 @@ const debugLog = (val: boolean) => {
   }
 }
 
+const reset = () => {
+  close()
+  self.status = 0
+}
+
+defineExpose({
+  reset
+})
+
 watch(
   () => props.enabled,
   (newVal: boolean) => {
@@ -547,16 +565,15 @@ onUnmounted(() => {
 
 <template>
   <div class="vlt-wrapper">
-    <div>
+    <div class="vlt-svg">
       <svg
+        v-if="!props.mode"
         t="1641739095332"
         class="icon"
         viewBox="0 0 1024 1024"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         p-id="30001"
-        width="100"
-        height="120"
       >
         <path
           d="M746.666667 405.333333a21.333333 21.333333 0 0 0-21.333334 21.333334v106.666666a213.333333 213.333333 0 0 1-426.666666 0v-106.666666a21.333333 21.333333 0 0 0-42.666667 0v106.666666a256 256 0 0 0 234.666667 256v106.666667h-128a21.333333 21.333333 0 0 0 0 42.666667h298.666666a21.333333 21.333333 0 1 0 0-42.666667h-128v-106.666667a256 256 0 0 0 234.666667-256v-106.666666a21.333333 21.333333 0 0 0-21.333333-21.333334z"
@@ -569,6 +586,21 @@ onUnmounted(() => {
           fill="#e6e6e6"
         ></path>
       </svg>
+      <svg
+        v-if="props.mode"
+        t="1688029152168"
+        class="icon"
+        viewBox="0 0 1429 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="14018"
+      >
+        <path
+          d="M1053.155868 782.921143c-16.035165-11.410286-19.827341-33.645714-8.450813-49.444572 45.787429-64.950857 69.992088-141.604571 69.992088-221.769142 0-80.457143-24.204659-157.110857-69.992088-221.769143a36.076308 36.076308 0 0 1 8.450813-50.029715 35.817495 35.817495 0 0 1 49.872176 8.484572c54.249495 76.946286 83.124044 167.936 83.124044 263.021714s-28.581978 186.075429-83.124044 263.021714a35.671209 35.671209 0 0 1-29.167121 15.213715c-7.29178 0-14.290989-2.340571-20.705055-6.729143z m187.538286 171.739428c-16.046418-11.702857-19.838593-33.938286-8.462066-50.029714 81.368615-114.980571 124.241582-251.026286 124.241582-393.216 0-142.482286-42.872967-278.235429-124.230329-393.216a36.076308 36.076308 0 0 1 8.43956-50.029714 35.817495 35.817495 0 0 1 49.883429 8.484571c89.830681 127.268571 137.362286 277.357714 137.362285 434.761143 0 157.403429-47.531604 307.785143-137.362285 434.761143a35.671209 35.671209 0 0 1-29.167121 15.213714c-7.29178 0-14.290989-2.340571-20.705055-6.729143z m-497.855297 56.758858c-0.877714-0.585143-2.036747-1.170286-2.925714-2.048L460.237363 806.912H213.802198C95.940923 806.912 0 710.656 0 592.457143V429.787429C0 311.588571 95.952176 215.332571 213.779692 215.332571h234.777319L740.509538 12.873143c0.585143-0.585143 1.462857-0.877714 2.329319-1.462857a83.742945 83.742945 0 0 1 41.41011-11.117715c45.798681 0 82.831473 37.156571 82.831473 83.090286v856.356572c0 22.820571-9.035956 43.885714-25.374945 59.684571a82.291341 82.291341 0 0 1-57.456528 23.113143 82.145055 82.145055 0 0 1-41.41011-11.117714zM471.895209 735.232c7.584352 0 14.876132 2.340571 21.290198 6.729143l286.990066 208.018286c1.462857 0.585143 2.914462 0.877714 4.366065 0.877714 2.633143 0 5.840176-1.170286 7.876924-3.218286a12.04044 12.04044 0 0 0 3.207033-8.192V83.090286c0-7.899429-6.706637-11.410286-11.365275-11.410286a9.216 9.216 0 0 0-4.66989 1.170286l-299.525627 207.725714a36.683956 36.683956 0 0 1-20.423736 6.436571H213.779692c-78.454154 0-142.324747 64.073143-142.324747 142.774858V592.457143c0 78.701714 63.870593 142.774857 142.324747 142.774857h258.115517z"
+          fill="#e6e6e6"
+          p-id="14019"
+        ></path>
+      </svg>
     </div>
     <div class="vlt-wave" ref="waveRef"></div>
     <div class="vlt-volume">
@@ -578,6 +610,7 @@ onUnmounted(() => {
         max="1.0"
         step="0.01"
         v-model="self.volume"
+        :disabled="props.mode"
       />
     </div>
     <div class="vlt-runlog">{{ runlog }}</div>
@@ -595,6 +628,14 @@ onUnmounted(() => {
   border: 1px solid #ccc;
   font-size: 13px;
   margin: 0 auto;
+  text-align: center;
+
+  .vlt-svg {
+    svg {
+      width: 100px;
+      height: 120px;
+    }
+  }
 
   .vlt-dialog {
     position: absolute;
@@ -605,7 +646,7 @@ onUnmounted(() => {
     height: 100px;
     width: calc(100% - 20px);
     position: absolute;
-    top: 10px;
+    top: 20px;
     left: 10px;
   }
 

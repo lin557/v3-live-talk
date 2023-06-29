@@ -34,8 +34,14 @@ declare const _default: import('vue').DefineComponent<
       type: import('vue').PropType<boolean>
       default: boolean
     }
+    ready: {
+      type: import('vue').PropType<string>
+      default: string
+    }
   },
-  {},
+  {
+    reset: () => void
+  },
   unknown,
   {},
   {},
@@ -82,6 +88,10 @@ declare const _default: import('vue').DefineComponent<
         type: import('vue').PropType<boolean>
         default: boolean
       }
+      ready: {
+        type: import('vue').PropType<string>
+        default: string
+      }
     }>
   > & {
     'onUpdate:enabled'?: ((val: boolean) => any) | undefined
@@ -94,6 +104,7 @@ declare const _default: import('vue').DefineComponent<
     enabled: boolean
     lang: string
     debug: boolean
+    ready: string
   },
   {}
 >

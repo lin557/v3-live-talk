@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import V3LiveTalk from './components/v3-live-talk.vue'
 
 interface SelectOption {
@@ -14,6 +14,7 @@ interface LangOption {
 
 interface TalkOptions {
   url: string
+  mode: boolean
   imei: string
   chn: number
   enabled: boolean
@@ -22,10 +23,12 @@ interface TalkOptions {
   sampleRate: number
   sampleList: SelectOption[]
   langList: LangOption[]
+  ready: string
 }
 
 const _data: TalkOptions = {
-  url: 'ws://localhost:9090/ws/talk',
+  url: 'ws://localhost:9090/ws',
+  mode: false,
   imei: '10000012348',
   chn: 1,
   enabled: false,
@@ -45,19 +48,28 @@ const _data: TalkOptions = {
     { id: 0, value: 'zh-cn' },
     { id: 1, value: 'en' },
     { id: 2, value: 'th' }
-  ]
+  ],
+  ready: '初始化'
 }
 
 const self = reactive(_data)
+const talkRef = ref()
+
+const reset = () => {
+  talkRef.value.reset()
+}
 </script>
 
 <template>
   <V3LiveTalk
+    ref="talkRef"
     :ws="self.url"
     :imei="self.imei"
     :chn="self.chn"
     :sample-rate="self.sampleRate"
     :lang="self.lang"
+    :ready="self.ready"
+    :mode="self.mode"
     :debug="self.debug"
     v-model:enabled="self.enabled"
   />
@@ -96,12 +108,17 @@ const self = reactive(_data)
     </div>
   </div>
   <div class="around">
+    <label>监听模式</label>
+    <input style="width: 50px" type="checkbox" v-model="self.mode" />
+  </div>
+  <div class="around">
     <label>Debug 开关(对讲前开启)</label>
     <input style="width: 50px" type="checkbox" v-model="self.debug" />
   </div>
   <div class="around">
-    <button @click="self.enabled = true">打开对讲</button>
-    <button @click="self.enabled = false">关闭对讲</button>
+    <button @click="self.enabled = true">打开</button>
+    <button @click="self.enabled = false">关闭</button>
+    <button @click="reset">重置</button>
   </div>
 </template>
 <style lang="scss">

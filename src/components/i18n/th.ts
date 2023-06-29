@@ -1,11 +1,12 @@
 export default {
   init: '',
   connecting: 'กำลังเชื่อมต่อ',
-  connected: 'รอการพูดคุย',
+  connected: 'รอเสียง',
   disconnected: 'ตัดการเชื่อมต่อ',
   errSocket: 'ตัดการเชื่อมต่อ',
   noAllow: 'ปฏิเสธการอนุญาต',
   talking: 'การพูด',
+  monitoring: 'เฝ้าสังเกต',
   errCross: 'ข้อผิดพลาด CORS',
   errHttps: 'ต้องใช้ https',
   noMic: 'ต้องใช้ MIC',
